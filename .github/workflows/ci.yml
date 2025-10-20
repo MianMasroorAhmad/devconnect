@@ -1,5 +1,11 @@
 name: CI
 
+# Grant explicit permissions to the GITHUB_TOKEN used by actions. Required for package publishing (GHCR).
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
 on:
   push:
     branches: [ main, master ]
