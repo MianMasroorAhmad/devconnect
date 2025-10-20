@@ -88,3 +88,6 @@ jobs:
         with:
           name: trivy-report
           path: trivy-report.json
+
+# note: cleaned YAML to remove NBSP characters and code fences (fixes GitHub Actions parser)
+# timestamp: 2025-10-21
