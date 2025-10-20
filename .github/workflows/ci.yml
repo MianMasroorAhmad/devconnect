@@ -9,6 +9,9 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    env:
+      # Temporary JWT secret for CI only. Rotate and store in GitHub Secrets for production.
+      JWT_SECRET: 'devconnect-ci-temp-secret-please-rotate-CHANGE_ME'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,7 +31,8 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Build & test
-        run: mvn -B -DskipTests=false test
+        run: |
+          mvn -B -DskipTests=false -Djwt.secret="$JWT_SECRET" test
 
   docker-scan:
     needs: build-and-test
