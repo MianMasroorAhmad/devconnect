@@ -56,7 +56,8 @@ jobs:
         id: image
         run: |
           # Use lowercase repository path for Docker tag (Docker requires lowercase names)
-          OWNER_REPO=${{ toLower(github.repository) }}
+          # Use shell to lower-case the value because GH expressions aren't expanded inside run blocks
+          OWNER_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           echo "IMAGE_NAME=ghcr.io/${OWNER_REPO}:${{ github.sha }}" >> $GITHUB_ENV
 
       - name: Login to GitHub Container Registry
@@ -70,7 +71,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          push: ${{ github.ref == 'refs/heads/master' }}
+          push: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}
           tags: ${{ env.IMAGE_NAME }}
 
       - name: Run Trivy scan (produce JSON report)
