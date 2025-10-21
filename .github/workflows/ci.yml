@@ -94,3 +94,47 @@ jobs:
 
 # note: cleaned YAML to remove NBSP characters and code fences (fixes GitHub Actions parser)
 # timestamp: 2025-10-21
+
+  mock-deploy:
+    needs: docker-scan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Build package (skip tests)
+        run: mvn -B -DskipTests package
+
+      - name: Start application (background)
+        run: |
+          nohup java -jar target/devconnect-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+          echo $! > app.pid
+          # wait for startup (poll up to 60s)
+          for i in {1..30}; do
+            if curl -sSf http://localhost:8080/actuator/health >/dev/null; then
+              echo "app started"
+              break
+            fi
+            sleep 2
+          done
+
+      - name: Smoke test
+        run: |
+          curl -sSf http://localhost:8080/actuator/health | jq . || (cat app.log && exit 1)
+        shell: bash
+
+      - name: Stop application
+        run: |
+          if [ -f app.pid ]; then
+            kill "$(cat app.pid)" || true
+          else
+            pkill -f devconnect || true
+          fi
+        shell: bash
