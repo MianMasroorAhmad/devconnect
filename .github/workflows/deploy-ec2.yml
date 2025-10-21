@@ -16,7 +16,7 @@ jobs:
       packages: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up QEMU and Buildx
         uses: docker/setup-buildx-action@v2
@@ -41,7 +41,7 @@ jobs:
     environment: production
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set image variable for Terraform
         run: |

@@ -21,7 +21,7 @@ jobs:
       JWT_SECRET: 'devconnect-ci-temp-secret-please-rotate-CHANGE_ME'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Inject JWT secret from repository (if provided)
         # This step correctly overrides the default env var if a secret exists
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -123,7 +123,7 @@ jobs:
       JWT_SECRET: 'devconnect-ci-temp-secret-please-rotate-CHANGE_ME'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Inject JWT secret from repository (if provided)
         run: |
