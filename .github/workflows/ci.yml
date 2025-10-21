@@ -99,6 +99,9 @@ jobs:
     needs: docker-scan
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    env:
+      # Temporary JWT secret for CI mock-deploy. Keep in sync with build/test job or move to repository secrets.
+      JWT_SECRET: 'devconnect-ci-temp-secret-please-rotate-CHANGE_ME'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -114,7 +117,7 @@ jobs:
 
       - name: Start application (background)
         run: |
-          nohup java -jar target/devconnect-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+          nohup java -Djwt.secret="$JWT_SECRET" -jar target/devconnect-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
           echo $! > app.pid
           # wait for startup (poll up to 60s)
           for i in {1..30}; do
@@ -124,6 +127,7 @@ jobs:
             fi
             sleep 2
           done
+        shell: bash
 
       - name: Smoke test
         run: |
