@@ -1,0 +1,12 @@
+# Example Terraform backend configuration using S3 + DynamoDB for locking.
+# Copy this to backend.tf and replace placeholders with your values before running terraform init.
+
+terraform {
+  backend "s3" {
+    bucket = "<your-terraform-state-bucket>"
+    key    = "devconnect/terraform.tfstate"
+    region = "us-east-1"
+    dynamodb_table = "<your-terraform-lock-table>"
+    encrypt = true
+  }
+}
