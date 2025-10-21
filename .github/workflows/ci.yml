@@ -41,8 +41,6 @@ jobs:
           mvn -B -DskipTests=false -Djwt.secret="$JWT_SECRET" test
 
   docker-scan:
-    # Temporarily disabled to stabilize CI; re-enable after triage
-    if: false
     needs: build-and-test
     runs-on: ubuntu-latest
     steps:
