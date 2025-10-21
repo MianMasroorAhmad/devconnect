@@ -73,13 +73,17 @@ jobs:
           tags: ${{ env.IMAGE_NAME }}
 
       - name: Run Trivy scan (produce JSON report)
-        uses: aquasecurity/trivy-action@v1
-        with:
-          image-ref: ${{ env.IMAGE_NAME }}
-          format: json
-          output: trivy-report.json
-          severity: HIGH,CRITICAL
-          exit-code: '1'
+        run: |
+          # Run Trivy as a container and write JSON report to workspace
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v $GITHUB_WORKSPACE:/workspace \
+            aquasec/trivy image \
+              --format json \
+              --output /workspace/trivy-report.json \
+              --severity HIGH,CRITICAL \
+              ${{ env.IMAGE_NAME }}
+        shell: bash
 
       - name: Upload Trivy report
         if: always()
