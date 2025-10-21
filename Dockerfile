@@ -1,7 +1,7 @@
 # Multi-stage Dockerfile for DevConnect
 
 # Build stage: use slim Maven image to reduce installed packages
-FROM maven:3.9.4-eclipse-temurin-21-slim AS build
+FROM maven:3.9.4-eclipse-temurin-21 AS build
 WORKDIR /workspace
 COPY pom.xml mvnw mvnw.cmd ./
 COPY .mvn .mvn
