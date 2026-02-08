@@ -10,7 +10,7 @@ COPY src src
 RUN mvn -B -DskipTests package
 
 # Runtime stage: use a Debian-based Temurin JRE (smaller attack surface vs older alpine variants)
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:25-jre-jammy
 
 # Create a non-root user to run the app
 RUN groupadd -r app && useradd -r -g app app
